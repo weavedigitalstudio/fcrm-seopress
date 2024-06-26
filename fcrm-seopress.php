@@ -1,12 +1,12 @@
 <?php
 /*
-Plugin Name: FirehawkCRM SEOPress Pro Tributes Integration
-Description: Integrates SEOPress Pro with the FCRM Tributes plugin.
-Version: 1.2.1
+Plugin Name: FirehawkCRM SEOPress Tributes Integration
+Description: Integrates SEOPress * SEOPress Pro with the FireHawkCRM Tributes plugin.
+Version: 1.2.2
 Author: Weave Digital
 
 Changelog:
-Version 1.2.1
+Version 1.2.2
 - Added settings page for custom social share image URL.
 - Updated logic to use the custom social share image URL or fallback to 'default-social.jpg' if not set.
 - Improved code comments for better readability.
