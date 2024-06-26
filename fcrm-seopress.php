@@ -2,10 +2,15 @@
 /*
 Plugin Name: FirehawkCRM SEOPress Tributes Integration
 Description: Integrates SEOPress & SEOPress Pro with the FireHawk CRM Tributes plugin.
-Version: 1.2.3
+Version: 1.2.4
 Author: Weave Digital
 
 Changelog:
+Version 1.2.4
+- Added: Support for dynamic site title in custom meta titles.
+- Updated: Title format to include the site title after the custom suffix.
+- Fixed: Ensured client’s name is correctly included in the title.
+
 Version 1.2.3
 - Added settings page for custom social share image URL.
 - Updated logic to use the custom social share image URL or fallback to 'default-social.jpg' if not set.
@@ -15,7 +20,7 @@ Version 1.0
 - Initial release of the plugin.
 */
 
-if ( ! defined( 'ABSPATH' ) ) {
+if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
 }
 
@@ -44,7 +49,7 @@ class SEOPress_Tributes_Integration {
 
     public function add_admin_menu() {
         // Placeholder for the icon code
-        $icon_base64 = "PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4KPCEtLSBHZW5lcmF0b3I6IEFkb2JlIElsbHVzdHJhdG9yIDIyLjEuMCwgU1ZHIEV4cG9ydCBQbHVnLUluIC4gU1ZHIFZlcnNpb246IDYuMDAgQnVpbGQgMCkgIC0tPgo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4IgoJIHZpZXdCb3g9IjAgMCAxMDAwIDEwMDAiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDEwMDAgMTAwMDsiIHhtbDpzcGFjZT0icHJlc2VydmUiPgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgoJLnN0MHtmaWxsOiNGRkZGRkY7fQoJLnN0MXtvcGFjaXR5OjAuODU7ZmlsbDp1cmwoI1NWR0lEXzFfKTt9Cgkuc3Qye29wYWNpdHk6MC41NTtmaWxsOiNGRkZGRkY7fQoJLnN0M3tvcGFjaXR5OjAuNjU7ZmlsbDojRkZGRkZGO30KCS5zdDR7ZmlsbDp1cmwoI1NWR0lEXzJfKTt9Cgkuc3Q1e29wYWNpdHk6MC41OTtmaWxsOiNGRkZGRkY7fQoJLnN0NntvcGFjaXR5OjAuNzY7ZmlsbDojRkZGRkZGO30KCS5zdDd7ZmlsbDp1cmwoI1NWR0lEXzNfKTt9Cgkuc3Q4e2ZpbGw6dXJsKCNTVkdJRF80Xyk7fQoJLnN0OXtmaWxsOnVybCgjU1ZHSURfNV8pO30KCS5zdDEwe2ZpbGw6dXJsKCNTVkdJRF82Xyk7fQoJLnN0MTF7ZmlsbDp1cmwoI1NWR0lEXzdfKTt9Cgkuc3QxMntmaWxsOnVybCgjU1ZHSURfOF8pO30KCS5zdDEze2ZpbGw6dXJsKCNTVkdJRF85Xyk7fQoJLnN0MTR7ZmlsbDp1cmwoI1NWR0lEXzEwXyk7fQoJLnN0MTV7ZmlsbDp1cmwoI1NWR0lEXzExXyk7fQoJLnN0MTZ7ZmlsbDp1cmwoI1NWR0lEXzEyXyk7fQoJLnN0MTd7ZmlsbDp1cmwoI1NWR0lEXzEzXyk7fQoJLnN0MTh7ZmlsbDp1cmwoI1NWR0lEXzE0Xyk7fQoJLnN0MTl7ZmlsbDp1cmwoI1NWR0lEXzE1Xyk7fQoJLnN0MjB7b3BhY2l0eTowLjM1O2ZpbGw6I0ZGRkZGRjt9Cgkuc3QyMXtvcGFjaXR5OjAuODU7ZmlsbDp1cmwoI1NWR0lEXzE2Xyk7fQoJLnN0MjJ7b3BhY2l0eTowLjg1O2ZpbGw6dXJsKCNTVkdJRF8xN18pO30KCS5zdDIze29wYWNpdHk6MC41MTtmaWxsOiNGRkZGRkY7fQoJLnN0MjR7ZmlsbDp1cmwoI1NWR0lEXzE4Xyk7fQoJLnN0MjV7ZmlsbDp1cmwoI1NWR0lEXzE5Xyk7fQoJLnN0MjZ7ZmlsbDp1cmwoI1NWR0lEXzIwXyk7fQoJLnN0Mjd7ZmlsbDp1cmwoI1NWR0lEXzIxXyk7fQoJLnN0Mjh7ZmlsbDp1cmwoI1NWR0lEXzIyXyk7fQoJLnN0Mjl7ZmlsbDp1cmwoI1NWR0lEXzIzXyk7fQoJLnN0MzB7ZmlsbDp1cmwoI1NWR0lEXzI0Xyk7fQoJLnN0MzF7ZmlsbDp1cmwoI1NWR0lEXzI1Xyk7fQoJLnN0MzJ7ZmlsbDp1cmwoI1NWR0lEXzI2Xyk7fQoJLnN0MzN7ZmlsbDp1cmwoI1NWR0lEXzI3Xyk7fQoJLnN0MzR7ZmlsbDp1cmwoI1NWR0lEXzI4Xyk7fQoJLnN0MzV7ZmlsbDp1cmwoI1NWR0lEXzI5Xyk7fQoJLnN0MzZ7ZmlsbDp1cmwoI1NWR0lEXzMwXyk7fQoJLnN0Mzd7ZmlsbDp1cmwoI1NWR0lEXzMxXyk7fQoJLnN0Mzh7b3BhY2l0eTowLjg1O2ZpbGw6dXJsKCNTVkdJRF8zMl8pO30KPC9zdHlsZT4KPHBhdGggY2xhc3M9InN0MCIgZD0iTTQ2Ni4yLDU2Mi43Yy00NC44LTguNC03Ny4xLTQzLjEtMTA5LjktNzJjLTgzLjUtNzMuNy0xNTcuNS0xNTIuOS0yMjYuOC0yNDBsLTEuMiw5MC45bC0yNy44LTIyLjRsMjIsNzcuNgoJbC0zNS4zLTE3LjhsMzksNjkuNGwtNDIuOC0xMi45bDU2LjgsNjIuNGwtNDguMi00LjlsNjkuMiw1MC42bC01NS44LDMuOWw3NSwzMy41TDEzMSw1OTIuM2w4MC41LDIwLjhsLTQyLjcsMTcuNmw4MC42LDkuMQoJbC0yNy4xLDE2LjFsNzQuMS0xLjhsLTI3LjUsMjEuOWw3MC4xLTE0LjFMMzA1LDY5NS4ybDc2LjItMjUuOUwzNTUuNiw3MDVsNTYuMS0yOC4zbC0xNSwzNC4xbDYxLjktMzguNWw4LjMsMzguMWwxNi44LDE4LjMKCWwtNDIuNSw0My43bDQuNSwzNS44bDMzLTE0bDIxLjYsMjguOWwyMi4zLTI4LjNsMzIuNiwxNC45bDUuNy0zNS42bC00MS41LTQ0LjhsMTguNC0xOC45bDkuNS0zNy42bDYxLjQsMzguNWwtMTQuNC0zMy45bDU2LjEsMjguNwoJTDYyNC4xLDY3MGw3Ni4zLDI2LjFsLTM0LTMzLjVsNzAuMywxNGwtMjcuNi0yMmw3NC40LDJsLTI3LjUtMTYuMWw4MC45LTguOWwtNDMuMi0xNy43bDgwLjgtMjAuOGwtNTAtMTEuMWw3NS41LTMzLjdsLTU1LjktMy43CglsNjkuMi01MC44bC00OC44LDUuM2w1Ny45LTYyLjhsLTQzLjMsMTIuOGwzOS4xLTY5LjRsLTM1LjYsMThsMjIuNi03OGwtMjgsMjIuMmMwLDAtMS4xLTkwLjgtMS4xLTkwLjljMCwzLjctMTEsMTMuOC0xMy4yLDE2LjYKCWMtOC45LDExLjMtMTguMiwyMi4yLTI3LjEsMzMuNWMtNjgsODYuNi0xNTIuMiwxNzMuMS0yNDQuNSwyMzRjLTEwLjcsNy00NiwzNC01NS4yLDI0LjNjLTYuNC02LjctOC41LTI2LjgtMTEuMy0zNS45CgljMCwwLDEwLjctMy4zLDIxLDIuN2MwLDAsMC02LTUuOS0xMi4yYzAsMC0xNi45LTQtNjAtMS45Yy0yLjcsMC4xLTExLjgsNDUuNS0xMy4xLDUwLjhDNDY2LjgsNTYyLjgsNDY2LjUsNTYyLjcsNDY2LjIsNTYyLjd6Ii8+Cjwvc3ZnPgo=";
+        $icon_base64 = ""; // Add your icon code here
 
         // Add the settings page
         add_menu_page(
@@ -88,18 +93,32 @@ class SEOPress_Tributes_Integration {
             'firehawkcrm_seopress_section'
         );
 
+        // Add a field for the custom title suffix
+        add_settings_field(
+            'firehawkcrm_seopress_title_suffix',
+            __('Custom Title Suffix', 'firehawkcrm-seopress'),
+            array($this, 'title_suffix_callback'),
+            'firehawkcrm_seopress_settings',
+            'firehawkcrm_seopress_section'
+        );
+
         // Register the settings
         register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
+        register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
     }
 
     public function settings_section_callback() {
-        echo '<p>' . __('Configure the custom social share image URL for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
+        echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
     }
 
     public function social_share_image_callback() {
         $option = get_option('firehawkcrm_seopress_social_share_image');
-        echo '<p>' . __('This image will be used as the social share image for tributes. If not set, the default image will be used.', 'firehawkcrm-seopress') . '</p>';
         echo '<input type="text" id="firehawkcrm_seopress_social_share_image" name="firehawkcrm_seopress_social_share_image" value="' . esc_attr($option) . '" />';
+    }
+
+    public function title_suffix_callback() {
+        $option = get_option('firehawkcrm_seopress_title_suffix', ' - Funeral Notice');
+        echo '<input type="text" id="firehawkcrm_seopress_title_suffix" name="firehawkcrm_seopress_title_suffix" value="' . esc_attr($option) . '" />';
     }
 
     public function add_seopress_meta_tags() {
@@ -112,7 +131,7 @@ class SEOPress_Tributes_Integration {
                 $client = $single_tribute->getClient();
 
                 if ($client) {
-                    $meta_title = $single_tribute->getPageTitle();
+                    $meta_title = $this->get_custom_meta_title($single_tribute);
                     $meta_description = isset($client->content) ? strip_tags($client->content) : "Tribute for " . $client->firstName . " " . $client->lastName;
                     $meta_image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'default-social.jpg');
                     $current_url = $single_tribute->getPageUrl();
@@ -134,7 +153,7 @@ class SEOPress_Tributes_Integration {
         if (is_page(Single_Tribute::getSingleTributePageId())) {
             $single_tribute = new Single_Tribute();
             $single_tribute->detectClient();
-            $title = $single_tribute->getPageTitle();
+            $title = $this->get_custom_meta_title($single_tribute);
         }
         return $title;
     }
@@ -156,6 +175,15 @@ class SEOPress_Tributes_Integration {
             $image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'default-social.jpg');
         }
         return $image;
+    }
+
+    private function get_custom_meta_title($single_tribute) {
+        $client = $single_tribute->getClient();
+        $clientName = isset($client->fullName) ? $client->fullName : $client->firstName . ' ' . $client->lastName;
+        $customSuffix = get_option('firehawkcrm_seopress_title_suffix', ' - Funeral Notice');
+        $siteTitle = get_bloginfo('name');
+        $customMetaTitle = $clientName . $customSuffix . ' | ' . $siteTitle;
+        return $customMetaTitle;
     }
 
 }
