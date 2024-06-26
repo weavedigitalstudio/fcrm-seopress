@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: FirehawkCRM SEOPress Tributes Integration
-Description: Integrates SEOPress * SEOPress Pro with the FireHawkCRM Tributes plugin.
+Description: Integrates SEOPress & SEOPress Pro with the FireHawk CRM Tributes plugin.
 Version: 1.2.2
 Author: Weave Digital
 
