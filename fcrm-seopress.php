@@ -1,10 +1,18 @@
 <?php
-/*
-Plugin Name: FirehawkCRM SEOPress Tributes Integration
-Description: Integrates SEOPress & SEOPress Pro with the FireHawk CRM Tributes plugin.
-Version: 1.2.4
-Author: Weave Digital
+/**
+ * Plugin Name:       FirehawkCRM SEOPress Tributes Integration
+ * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
+ * Description:       Integrates SEOPress & SEOPress Pro with the FireHawk CRM Tributes plugin.
+ * Version:           1.2.4
+ * Author:            Weave Digital Studio
+ * License:           GPL-3.0
+ * GitHub Plugin URI: https://github.com/weavedigitalstudio/fcrm-seopress/
+ * Primary Branch:    main
+ * Requires at least: 6.0
+ * Requires PHP:      7.2
+ */
 
+/*
 Changelog:
 Version 1.2.4
 - Added: Support for dynamic site title in custom meta titles.
