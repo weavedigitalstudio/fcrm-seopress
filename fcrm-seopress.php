@@ -3,7 +3,7 @@
  * Plugin Name:       FirehawkCRM SEOPress Tributes Integration
  * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
  * Description:       Integrates SEOPress & SEOPress Pro with the FireHawk CRM Tributes plugin.
- * Version:           1.2.6
+ * Version:           1.2.7
  * Author:            Weave Digital Studio
  * License:           GPL-3.0
  * GitHub Plugin URI: https://github.com/weavedigitalstudio/fcrm-seopress/
@@ -14,12 +14,15 @@
 
 /*
 Changelog:
+Version 1.2.7
+- Fixed: Ensure OG image meta tag is added with fallback image.
+
 Version 1.2.6
 - Fixed: Ensure the custom SEOPress description and title are only applied to tribute pages.
 - Added: New default social share image
 
 Version 1.2.5
-- Added: Setting page icon
+- Added: Setting page icon.
 
 Version 1.2.4
 - Added: Support for dynamic site title in custom meta titles.
@@ -58,7 +61,7 @@ class SEOPress_Tributes_Integration {
             add_filter('seopress_titles_title', array($this, 'custom_seopress_titles_title'));
             add_filter('seopress_titles_desc', array($this, 'custom_seopress_titles_desc'));
             // Customize SEOPress Open Graph image
-            add_filter('seopress_og_image', array($this, 'custom_seopress_og_image'));
+            add_filter('seopress_social_og_thumb', array($this, 'custom_seopress_og_image'));
         }
     }
 
@@ -169,7 +172,6 @@ class SEOPress_Tributes_Integration {
             $single_tribute = new Single_Tribute();
             $single_tribute->detectClient();
             $title = $this->get_custom_meta_title($single_tribute);
-            return $title;
         }
         return $title;
     }
@@ -181,16 +183,16 @@ class SEOPress_Tributes_Integration {
             $single_tribute->detectClient();
             $client = $single_tribute->getClient();
             $desc = isset($client->content) ? strip_tags($client->content) : "Tribute for " . $client->firstName . " " . $client->lastName;
-            return $desc;
         }
         return $desc;
     }
 
     public function custom_seopress_og_image($image) {
         // Customize the SEOPress Open Graph image
-        if (is_page(Single_Tribute::getSingleTributePageId())) {
+        $single_tribute = new Single_Tribute();
+        if (is_page($single_tribute->getSingleTributePageId())) {
             $image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'funeral-notice-social-share.jpg');
-            return $image;
+            return '<meta property="og:image" content="' . esc_url($image) . '" />';
         }
         return $image;
     }
@@ -200,10 +202,10 @@ class SEOPress_Tributes_Integration {
         $clientName = isset($client->fullName) ? $client->fullName : $client->firstName . ' ' . $client->lastName;
         $customSuffix = get_option('firehawkcrm_seopress_title_suffix', ' - Funeral Notice');
         $siteTitle = get_bloginfo('name');
-        $customMetaTitle = $clientName . $customSuffix . ' | ' . $siteTitle;
-        return $customMetaTitle;
-    }
-
-}
-
-new SEOPress_Tributes_Integration();
+                $customMetaTitle = $clientName . $customSuffix . ' | ' . $siteTitle;
+                return $customMetaTitle;
+            }
+        
+        }
+        
+        new SEOPress_Tributes_Integration();
