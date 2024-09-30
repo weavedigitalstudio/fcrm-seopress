@@ -1,9 +1,9 @@
 <?php
 /**
- * Plugin Name:       FirehawkCRM Tributes and SEOPress Integration
+ * Plugin Name:       FirehawkCRM Tributes - SEOPress (pro) Integration
  * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
- * Description:       Adds SEOPress & SEOPress Pro integration and meta tags to the FireHawk CRM Tributes plugin.
- * Version:           1.2.8
+ * Description:       Adds SEOPress & SEOPress Pro integration and meta/social tags to the FireHawk CRM Tributes plugin.
+ * Version:           1.2.9
  * Author:            Weave Digital Studio, Gareth Bissland
  * License: MIT
  * License URI: https://opensource.org/licenses/MIT
@@ -15,6 +15,9 @@
 
 /*
 Changelog:
+Version 1.2.9
+- Spelling fixes ;-)
+
 Version 1.2.8
 - Added: Check for the FirehawkCRM Tributes plugin being active before running integration logic.
 - Fixed: Prevent PHP warnings when client data is not available.
