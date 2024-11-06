@@ -3,7 +3,7 @@
  * Plugin Name:       FirehawkCRM Tributes - SEOPress (pro) Integration
  * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
  * Description:       Adds SEOPress (& SEOPress Pro) integration and correct meta/social tags and social images to the FireHawk CRM Tributes plugin.
- * Version:           1.4.1
+ * Version:           1.4.2
  * Author:            Weave Digital Studio, Gareth Bissland
  * Author URI:        https://weave.co.nz
  * License:           MIT
@@ -211,22 +211,23 @@ class Plugin {
     }
 
     public function register_settings(): void {
-    register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
-    register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
-    
-    add_settings_section(
-        'firehawkcrm_seopress_section',
-        __('SEOPress Integration Settings', 'firehawkcrm-seopress'),
-        [$this, 'render_settings_section'],
-        'firehawkcrm_seopress_settings'
-    );
-}
+        register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
+        register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
+        
+        add_settings_section(
+            'firehawkcrm_seopress_section',
+            __('SEOPress Integration Settings', 'firehawkcrm-seopress'),
+            [$this, 'render_settings_section'],
+            'firehawkcrm_seopress_settings'
+        );
+    }
 
-public function render_settings_section(): void {
-    echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
-}
+    public function render_settings_section(): void {
+        echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
+    }
+} // Close the Plugin class here
 
-// Initialize the plugin
+// Initialize the plugin (outside the class)
 add_action('plugins_loaded', function() {
     Plugin::get_instance();
 });
