@@ -37,6 +37,43 @@ class Plugin {
         
         $this->init_hooks();
     }
+
+    private function check_dependencies(): bool {
+        if (!class_exists('Single_Tribute')) {
+            add_action('admin_notices', function() {
+                echo '<div class="error"><p>FirehawkCRM Tributes plugin is required for the SEOPress Integration to work.</p></div>';
+            });
+            return false;
+        }
+        
+        if (!function_exists('seopress_get_service')) {
+            add_action('admin_notices', function() {
+                echo '<div class="error"><p>SEOPress plugin is required for this integration to work.</p></div>';
+            });
+            return false;
+        }
+        
+        // Check if Yoast SEO is active and warn user
+        if (defined('WPSEO_VERSION')) {
+            add_action('admin_notices', function() {
+                echo '<div class="notice notice-warning"><p>Both Yoast SEO and SEOPress are active. To avoid conflicts, please disable Yoast SEO\'s integration in the FirehawkCRM Tributes settings.</p></div>';
+            });
+            
+            // Optional: Disable Yoast's tribute integration
+            add_action('plugins_loaded', function() {
+                remove_filter('wpseo_canonical', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_canonical_url'));
+                remove_filter('wpseo_title', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_title'));
+                remove_filter('wpseo_opengraph_url', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_opengraph_url'));
+                remove_filter('wpseo_opengraph_title', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_opengraph_title'));
+                remove_filter('wpseo_opengraph_image', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_opengraph_image'));
+                remove_filter('wpseo_opengraph_desc', array($GLOBALS['fcrm_tributes']->get_public(), 'update_yoast_single_tribute_opengraph_desc'));
+                remove_filter('wpseo_sitemap_index', array($GLOBALS['fcrm_tributes']->get_public(), 'yoast_add_to_sitemap_index'));
+            }, 20); // Run after Yoast initializes
+        }
+        
+        return true;
+    }
+
     
     public static function get_instance(): self {
         if (null === self::$instance) {
