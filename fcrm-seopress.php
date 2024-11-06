@@ -225,6 +225,29 @@ class Plugin {
     public function render_settings_section(): void {
         echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
     }
+
+    public function customize_seo_title($title): string {
+    if ($this->is_tribute_page()) {
+        $tribute_data = $this->get_tribute_data();
+        return $tribute_data['title'];
+    }
+    return $title;
+}
+
+    public function customize_seo_description($desc): string {
+        if ($this->is_tribute_page()) {
+            $tribute_data = $this->get_tribute_data();
+            return $tribute_data['description'];
+        }
+        return $desc;
+    }
+    
+    public function customize_og_image($image): string {
+        if ($this->is_tribute_page()) {
+            return $this->get_social_image_url();
+        }
+        return $image;
+    }    
 } // End of Plugin class
 
 // Initialize the plugin (outside the class)
