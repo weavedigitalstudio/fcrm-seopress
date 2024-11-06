@@ -22,6 +22,13 @@ FireHawk CRM and their WordPress tributes plugin are from [FireHawk Funerals](ht
 FireHawk CRM and their WordPress tributes plugin are products of FireHawk Funerals. This integration plugin is maintained by Weave Digital Studio.
 
 ## Changelog
+### 1.4.2
+- Added validation for plugin settings
+- Added missing SEO customization callbacks
+- Added proper uninstall cleanup
+- Improved code organisation and structure
+- Added Yoast SEO conflict handling
+
 ### 1.4.0
 - Code structure improvements
 - Better dependency checking
