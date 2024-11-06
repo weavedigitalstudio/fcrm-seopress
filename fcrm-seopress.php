@@ -3,7 +3,7 @@
  * Plugin Name:       FirehawkCRM Tributes - SEOPress (pro) Integration
  * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
  * Description:       Adds SEOPress (& SEOPress Pro) integration and correct meta/social tags and social images to the FireHawk CRM Tributes plugin.
- * Version:           1.4.2
+ * Version:           1.4.3
  * Author:            Weave Digital Studio, Gareth Bissland
  * Author URI:        https://weave.co.nz
  * License:           MIT
