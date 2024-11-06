@@ -82,23 +82,6 @@ class Plugin {
         return self::$instance;
     }
     
-    private function check_dependencies(): bool {
-        if (!class_exists('Single_Tribute')) {
-            add_action('admin_notices', function() {
-                echo '<div class="error"><p>FirehawkCRM Tributes plugin is required for the SEOPress Integration to work.</p></div>';
-            });
-            return false;
-        }
-        
-        if (!function_exists('seopress_get_service')) {
-            add_action('admin_notices', function() {
-                echo '<div class="error"><p>SEOPress plugin is required for this integration to work.</p></div>';
-            });
-            return false;
-        }
-        
-        return true;
-    }
     
     private function init_hooks(): void {
         add_action('init', [$this, 'load_textdomain']);
@@ -226,20 +209,21 @@ class Plugin {
         
         include plugin_dir_path(__FILE__) . 'templates/admin-settings.php';
     }
-    
+
     public function register_settings(): void {
-        register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
-        register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
-        
-        add_settings_section(
-            'firehawkcrm_seopress_section',
-            __('SEOPress Integration Settings', 'firehawkcrm-seopress'),
-            [$this, 'render_settings_section'],
-            'firehawkcrm_seopress_settings'
-        );
-        
-        $this->add_settings_fields();
-    }
+    register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
+    register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
+    
+    add_settings_section(
+        'firehawkcrm_seopress_section',
+        __('SEOPress Integration Settings', 'firehawkcrm-seopress'),
+        [$this, 'render_settings_section'],
+        'firehawkcrm_seopress_settings'
+    );
+}
+
+public function render_settings_section(): void {
+    echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
 }
 
 // Initialize the plugin
