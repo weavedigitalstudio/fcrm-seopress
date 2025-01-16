@@ -3,49 +3,17 @@
  * Plugin Name:       FirehawkCRM Tributes - SEOPress (pro) Integration
  * Plugin URI:        https://github.com/weavedigitalstudio/fcrm-seopress/
  * Description:       Adds SEOPress & SEOPress Pro integration and meta/social tags to the FireHawk CRM Tributes plugin.
- * Version:           1.3.0
+ * Version:           1.4.0
  * Author:            Weave Digital Studio, Gareth Bissland
- * License:           MIT
- * License URI:       https://opensource.org/licenses/MIT
+ * License:           GPL-3.0+
+ * Copyright (C) 2024 Weave Digital Studio Ltd
  * GitHub Plugin URI: https://github.com/weavedigitalstudio/fcrm-seopress/
  * Primary Branch:    main
  * Requires at least: 6.0
  * Requires PHP:      7.2
  */
 
-/*
-Changelog:
-Version 1.3.0
-- Spelling fixes ;-)
-
-Version 1.2.8
-- Added: Check for the FirehawkCRM Tributes plugin being active before running integration logic.
-- Fixed: Prevent PHP warnings when client data is not available.
-- Updated: Remove newlines from meta description fields.
-
-Version 1.2.7
-- Fixed: Ensure OG image meta tag is added with fallback image.
-
-Version 1.2.6
-- Fixed: Ensure the custom SEOPress description and title are only applied to tribute pages.
-- Added: New default social share image
-
-Version 1.2.5
-- Added: Setting page icon.
-
-Version 1.2.4
-- Added: Support for dynamic site title in custom meta titles.
-- Updated: Title format to include the site title after the custom suffix.
-- Fixed: Ensured client’s name is correctly included in the title.
-
-Version 1.2.3
-- Added settings page for custom social share image URL.
-- Updated logic to use the custom social share image URL or fallback to 'default-social.jpg' if not set.
-- Improved code comments for better readability.
-
-Version 1.0
-- Initial release of the plugin.
-*/
+namespace WDS\FirehawkCRM\SEOPress;
 
 if (!defined('ABSPATH')) {
     exit; // Exit if accessed directly.
@@ -54,6 +22,11 @@ if (!defined('ABSPATH')) {
 // Check if FirehawkCRM Tributes plugin is active
 if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     class SEOPress_Tributes_Integration {
+        /**
+         * Default settings and constants
+         */
+        private const DEFAULT_TITLE_SUFFIX = ' - Funeral Notice';
+        private const DEFAULT_SOCIAL_IMAGE = 'funeral-notice-social-share.jpg';
 
         public function __construct() {
             // Initialize hooks when the template is being loaded
@@ -61,11 +34,21 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
             // Add admin menu and settings
             add_action('admin_menu', array($this, 'add_admin_menu'));
             add_action('admin_init', array($this, 'register_settings'));
+            // Add media uploader scripts
+            add_action('admin_enqueue_scripts', array($this, 'enqueue_media_scripts'));
+        }
+
+        public function enqueue_media_scripts($hook) {
+            if ($hook != 'toplevel_page_firehawkcrm-seopress-integration') {
+                return;
+            }
+            wp_enqueue_media();
+            wp_enqueue_style('firehawkcrm-seopress-admin', plugins_url('css/admin.css', __FILE__));
         }
 
         public function initialize_hooks() {
             // Check if the current page is a single tribute page
-            if (is_page(Single_Tribute::getSingleTributePageId())) {
+            if (is_page(\Single_Tribute::getSingleTributePageId())) {
                 // Add custom meta tags to the head section
                 add_action('wp_head', array($this, 'add_seopress_meta_tags'));
                 // Customize SEOPress title and description
@@ -90,11 +73,19 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
                 'data:image/svg+xml;base64,' . $icon_base64
             );
         }
-
         public function settings_page() {
+            if (!current_user_can('manage_options')) {
+                wp_die(__('You do not have sufficient permissions to access this page.'));
+            }
             ?>
             <div class="wrap">
-                <h2>FirehawkCRM SEOPress Integration</h2>
+                <h2>FirehawkCRM Tributes SEOPress Integration</h2>
+                
+                <div class="about-text" style="margin: 1em 0;">
+                    <p><?php _e('If you use SEOPress on your WordPress funeral website, this replaces the current bundled Yoast SEO integration of the FireHawkCRM Tributes plugin with added support for SEOPress and SEOPress Pro.', 'firehawkcrm-seopress'); ?></p>
+    
+                </div>
+            
                 <form method="post" action="options.php">
                     <?php settings_fields('firehawkcrm_seopress_settings'); ?>
                     <?php do_settings_sections('firehawkcrm_seopress_settings'); ?>
@@ -103,7 +94,7 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
             </div>
             <?php
         }
-
+        
         public function register_settings() {
             // Add a section for the SEOPress integration settings
             add_settings_section(
@@ -112,17 +103,16 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
                 array($this, 'settings_section_callback'),
                 'firehawkcrm_seopress_settings'
             );
-
-            // Add a field for the custom social share image URL
+        
+            // Add fields
             add_settings_field(
                 'firehawkcrm_seopress_social_share_image',
-                __('Custom Social Share Image URL', 'firehawkcrm-seopress'),
+                __('Custom Social Share Image', 'firehawkcrm-seopress'),
                 array($this, 'social_share_image_callback'),
                 'firehawkcrm_seopress_settings',
                 'firehawkcrm_seopress_section'
             );
-
-            // Add a field for the custom title suffix
+        
             add_settings_field(
                 'firehawkcrm_seopress_title_suffix',
                 __('Custom Title Suffix', 'firehawkcrm-seopress'),
@@ -130,32 +120,100 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
                 'firehawkcrm_seopress_settings',
                 'firehawkcrm_seopress_section'
             );
-
-            // Register the settings
-            register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image');
-            register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix');
+        
+            // Register settings
+            register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_social_share_image', 
+                ['sanitize_callback' => 'esc_url_raw']
+            );
+            register_setting('firehawkcrm_seopress_settings', 'firehawkcrm_seopress_title_suffix',
+                ['sanitize_callback' => 'sanitize_text_field']
+            );
         }
-
+        
         public function settings_section_callback() {
             echo '<p>' . __('Configure the custom social share image URL and title suffix for the SEOPress integration.', 'firehawkcrm-seopress') . '</p>';
         }
-
+        
         public function social_share_image_callback() {
             $option = get_option('firehawkcrm_seopress_social_share_image');
-            echo '<input type="text" id="firehawkcrm_seopress_social_share_image" name="firehawkcrm_seopress_social_share_image" value="' . esc_attr($option) . '" />';
+            $default_image = plugin_dir_url(__FILE__) . self::DEFAULT_SOCIAL_IMAGE;
+            $current_image = $option ? $option : $default_image;
+            ?>
+            <div class="image-preview-wrapper">
+                <img id="image-preview" src="<?php echo esc_url($current_image); ?>" 
+                     style="max-width: 300px; display: block; margin-bottom: 10px;">
+                <p class="description" <?php echo $option ? 'style="display: none;"' : ''; ?>>
+                    <?php _e('Currently using default image. Upload a custom image to override.', 'firehawkcrm-seopress'); ?>
+                </p>
+            </div>
+            <input type="text" 
+                   id="firehawkcrm_seopress_social_share_image" 
+                   name="firehawkcrm_seopress_social_share_image" 
+                   value="<?php echo esc_attr($option); ?>" 
+                   class="regular-text">
+            <input type="button" 
+                   id="upload-image-button" 
+                   class="button" 
+                   value="<?php _e('Upload Image', 'firehawkcrm-seopress'); ?>">
+            <input type="button" 
+                   id="remove-image-button" 
+                   class="button" 
+                   value="<?php _e('Reset to Default', 'firehawkcrm-seopress'); ?>" 
+                   <?php echo !$option ? 'style="display: none;"' : ''; ?>>
+            
+            <script>
+            jQuery(document).ready(function($) {
+                var mediaUploader;
+                var defaultImage = '<?php echo esc_url($default_image); ?>';
+                
+                $('#upload-image-button').on('click', function(e) {
+                    e.preventDefault();
+                    
+                    if (mediaUploader) {
+                        mediaUploader.open();
+                        return;
+                    }
+                    
+                    mediaUploader = wp.media({
+                        title: '<?php _e('Choose Social Share Image', 'firehawkcrm-seopress'); ?>',
+                        button: {
+                            text: '<?php _e('Use this image', 'firehawkcrm-seopress'); ?>'
+                        },
+                        multiple: false
+                    });
+                    
+                    mediaUploader.on('select', function() {
+                        var attachment = mediaUploader.state().get('selection').first().toJSON();
+                        $('#firehawkcrm_seopress_social_share_image').val(attachment.url);
+                        $('#image-preview').attr('src', attachment.url);
+                        $('#remove-image-button').show();
+                        $('.description').hide();
+                    });
+                    
+                    mediaUploader.open();
+                });
+                
+                $('#remove-image-button').on('click', function() {
+                    $('#firehawkcrm_seopress_social_share_image').val('');
+                    $('#image-preview').attr('src', defaultImage);
+                    $(this).hide();
+                    $('.description').show();
+                });
+            });
+            </script>
+            <?php
         }
-
+        
         public function title_suffix_callback() {
-            $option = get_option('firehawkcrm_seopress_title_suffix', ' - Funeral Notice');
-            echo '<input type="text" id="firehawkcrm_seopress_title_suffix" name="firehawkcrm_seopress_title_suffix" value="' . esc_attr($option) . '" />';
+            $option = get_option('firehawkcrm_seopress_title_suffix', self::DEFAULT_TITLE_SUFFIX);
+            echo '<input type="text" id="firehawkcrm_seopress_title_suffix" name="firehawkcrm_seopress_title_suffix" value="' . esc_attr($option) . '" class="regular-text">';
         }
-
         public function add_seopress_meta_tags() {
             // Check if SEOPress is active and available
             if (function_exists('seopress_get_service')) {
                 $seopress_service = seopress_get_service('MetaTags');
                 if ($seopress_service) {
-                    $single_tribute = new Single_Tribute();
+                    $single_tribute = new \Single_Tribute();
                     $single_tribute->detectClient();
                     $client = $single_tribute->getClient();
 
@@ -163,7 +221,7 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
                         $meta_title = $this->get_custom_meta_title($single_tribute);
                         $meta_description = isset($client->content) ? strip_tags($client->content) : "Tribute for " . (isset($client->firstName) ? $client->firstName : '') . " " . (isset($client->lastName) ? $client->lastName : '');
                         $meta_description = str_replace(array("\r", "\n"), ' ', $meta_description); // Remove newlines
-                        $meta_image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'funeral-notice-social-share.jpg');
+                        $meta_image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . self::DEFAULT_SOCIAL_IMAGE);
                         $current_url = $single_tribute->getPageUrl();
 
                         // Set the SEOPress meta tags
@@ -177,7 +235,7 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
                         // Handle the case where client data is not available
                         $meta_title = get_bloginfo('name') . ' - Tribute';
                         $meta_description = 'This tribute page is currently unavailable.';
-                        $meta_image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'funeral-notice-social-share.jpg');
+                        $meta_image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . self::DEFAULT_SOCIAL_IMAGE);
                         $current_url = home_url();
 
                         // Set default SEOPress meta tags
@@ -194,8 +252,8 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
 
         public function custom_seopress_titles_title($title) {
             // Customize the SEOPress title
-            if (is_page(Single_Tribute::getSingleTributePageId())) {
-                $single_tribute = new Single_Tribute();
+            if (is_page(\Single_Tribute::getSingleTributePageId())) {
+                $single_tribute = new \Single_Tribute();
                 $single_tribute->detectClient();
                 $title = $this->get_custom_meta_title($single_tribute);
             }
@@ -204,8 +262,8 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
 
         public function custom_seopress_titles_desc($desc) {
             // Customize the SEOPress description
-            if (is_page(Single_Tribute::getSingleTributePageId())) {
-                $single_tribute = new Single_Tribute();
+            if (is_page(\Single_Tribute::getSingleTributePageId())) {
+                $single_tribute = new \Single_Tribute();
                 $single_tribute->detectClient();
                 $client = $single_tribute->getClient();
                 if ($client) {
@@ -220,9 +278,9 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
 
         public function custom_seopress_og_image($image) {
             // Customize the SEOPress Open Graph image
-            $single_tribute = new Single_Tribute();
+            $single_tribute = new \Single_Tribute();
             if (is_page($single_tribute->getSingleTributePageId())) {
-                $image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . 'funeral-notice-social-share.jpg');
+                $image = get_option('firehawkcrm_seopress_social_share_image', plugin_dir_url(__FILE__) . self::DEFAULT_SOCIAL_IMAGE);
                 return '<meta property="og:image" content="' . esc_url($image) . '" />';
             }
             return $image;
@@ -235,12 +293,11 @@ if (in_array('fcrm-tributes/fcrm-tributes.php', apply_filters('active_plugins', 
             } else {
                 $clientName = 'Tribute';
             }
-            $customSuffix = get_option('firehawkcrm_seopress_title_suffix', ' - Funeral Notice');
+            $customSuffix = get_option('firehawkcrm_seopress_title_suffix', self::DEFAULT_TITLE_SUFFIX);
             $siteTitle = get_bloginfo('name');
             $customMetaTitle = $clientName . $customSuffix . ' | ' . $siteTitle;
             return $customMetaTitle;
         }
-
     }
 
     new SEOPress_Tributes_Integration();

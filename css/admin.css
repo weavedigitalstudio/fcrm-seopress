@@ -1,0 +1,20 @@
+.image-preview-wrapper {
+	margin-bottom: 15px;
+}
+
+.image-preview-wrapper img {
+	border: 1px solid #ddd;
+	padding: 5px;
+	max-width: 300px;
+	height: auto;
+}
+
+.description {
+	font-style: italic;
+	color: #666;
+	margin: 5px 0;
+}
+
+#remove-image-button {
+	margin-left: 5px;
+}

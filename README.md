@@ -7,7 +7,7 @@ This add-on adds compatibility for [SEOPress](https://wordpress.org/plugins/wp-s
 
 Tribute meta page tags are then controlled by SEOPress
 
-It also adds a setting for a default social share image which can be set for tributes sit-ewide.
+It also adds a setting for a default social share image which can be set for tributes site-wide.
 
 FireHawk CRM and their WordPress tributes plugin are from [FireHawk Funerals](https://firehawkfunerals.com)
 
@@ -45,6 +45,17 @@ When installing this plugin from GitHub:
 
 ---
 
+## Requirements
+
+This plugin requires:
+- [FireHawkCRM Tributes](https://firehawkfunerals.com) plugin
+- Either [SEOPress](https://wordpress.org/plugins/wp-seopress/) (free) or [SEOPress Pro](https://www.seopress.org/)
+- WordPress 6.0 or higher
+- PHP 7.2 or higher
+
+The plugin will automatically check for the required plugins and show an admin notice if they're not active.
+
+---
 
 ## ⚠️ Important Notice
 
@@ -68,3 +79,42 @@ We encourage you to test thoroughly in a staging environment before any producti
 ![Plugin Icon](icon-256x256.png)
 
 ---
+
+## Changelog
+
+### v1.4.0
+- Added media upload for social share image
+- Added namesapce
+- Updated README and added CHANGELOG
+- Added Github install instructions
+
+### Version 1.3.0
+- **Fixed**: Spelling fixes ;-)
+
+### Version 1.2.8
+- **Added**: Check for the FirehawkCRM Tributes plugin being active before running integration logic.
+- **Fixed**: Prevent PHP warnings when client data is not available.
+- **Updated**: Remove newlines from meta description fields.
+
+### Version 1.2.7
+- **Fixed**: Ensure OG image meta tag is added with fallback image.
+
+### Version 1.2.6
+- **Fixed**: Ensure the custom SEOPress description and title are only applied to tribute pages.
+- **Added**: New default social share image.
+
+### Version 1.2.5
+- **Added**: Setting page icon.
+
+### Version 1.2.4
+- **Added**: Support for dynamic site title in custom meta titles.
+- **Updated**: Title format to include the site title after the custom suffix.
+- **Fixed**: Ensured client’s name is correctly included in the title.
+
+### Version 1.2.3
+- **Added**: Settings page for custom social share image URL.
+- **Updated**: Logic to use the custom social share image URL or fallback to `default-social.jpg` if not set.
+- **Improved**: Code comments for better readability.
+
+### Version 1.0
+- **Initial Release**: The plugin.
