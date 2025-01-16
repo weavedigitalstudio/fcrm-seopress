@@ -39,7 +39,6 @@ When installing this plugin from GitHub:
 5. Create a new ZIP file from the renamed folder
 6. In your WordPress admin panel, go to Plugins → Add New → Upload Plugin
 7. Upload your new ZIP file and activate the plugin
-8. Plugin should then auto-update moving forward if there are any changes.
 
 **Note**: The folder renaming step is necessary for WordPress to properly handle plugin updates and functionality.
 
