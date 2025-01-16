@@ -6,11 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## v1.4.0
-- Added media upload for social share image
-- Added namesapce
-- Updated README and added CHANGELOG
-- Added Github install instructions
+## v1.5.0
+- **Fixed**: Improved handling of quotation marks in meta titles and descriptions
+- **Fixed**: Added proper spacing cleanup in meta content
+- **Improved**: Added media library uploader for social share image selection
+- **Improved**: Added visual preview of current/default social share image
+- **Added**: 'Requirements' section to readme documentation
+- **Updated**: Plugin settings page with clearer introduction text
+
 
 ## Version 1.3.0
 - **Fixed**: Spelling fixes ;-)

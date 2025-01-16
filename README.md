@@ -35,7 +35,7 @@ When installing this plugin from GitHub:
 2. Download the latest release ZIP file
 3. Extract the ZIP file on your computer
 4. Rename the extracted folder to remove the version number  
-   (e.g., from `fcrm-seopress-0.1.1` to `fcrm-seopress`)
+   (e.g., from `fcrm-seopress-1.4.0` to `fcrm-seopress`)
 5. Create a new ZIP file from the renamed folder
 6. In your WordPress admin panel, go to Plugins → Add New → Upload Plugin
 7. Upload your new ZIP file and activate the plugin
@@ -82,11 +82,13 @@ We encourage you to test thoroughly in a staging environment before any producti
 
 ## Changelog
 
-### v1.4.0
-- Added media upload for social share image
-- Added namesapce
-- Updated README and added CHANGELOG
-- Added Github install instructions
+### v1.5.0
+- **Fixed**: Improved handling of quotation marks in meta titles and descriptions
+- **Fixed**: Added proper spacing cleanup in meta content
+- **Improved**: Added media library uploader for social share image selection
+- **Improved**: Added visual preview of current/default social share image
+- **Added**: 'Requirements' section to readme documentation
+- **Updated**: Plugin settings page with clearer introduction text
 
 ### Version 1.3.0
 - **Fixed**: Spelling fixes ;-)
